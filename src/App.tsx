@@ -1,4 +1,5 @@
 import NavBar from 'components/NavBar/NavBar';
+import Sidebar from 'components/Sidebar/Sidebar';
 import Create from 'pages/Create/Create';
 import Dashboard from 'pages/Dashboard/Dashboard';
 import Login from 'pages/Login/Login';
@@ -11,6 +12,8 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+
+        <Sidebar />
 
         <div className="container">
 
