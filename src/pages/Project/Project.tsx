@@ -1,4 +1,4 @@
-import './Project.module.css';
+import './Project.css';
 
 interface ProjectProps {}
 

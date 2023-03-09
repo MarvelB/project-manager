@@ -1,3 +1,4 @@
+import NavBar from 'components/NavBar/NavBar';
 import Create from 'pages/Create/Create';
 import Dashboard from 'pages/Dashboard/Dashboard';
 import Login from 'pages/Login/Login';
@@ -12,6 +13,8 @@ function App() {
       <BrowserRouter>
 
         <div className="container">
+
+          <NavBar />
 
           <Switch>
 

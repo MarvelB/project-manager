@@ -7,7 +7,7 @@
     "default": {
       "customTemplates": {
         "component": "src/template/component/TemplateName.tsx",
-        "style": "src/template/component/TemplateName.module.css"
+        "style": "src/template/component/TemplateName.css"
       },
       "path": "src/components",
       "withStyle": false,
@@ -18,7 +18,7 @@
     "page": {
       "customTemplates": {
         "component": "src/template/component/TemplateName.tsx",
-        "style": "src/template/component/TemplateName.module.css"
+        "style": "src/template/component/TemplateName.css"
       },
       "path": "src/pages",
       "withStyle": false,

@@ -1,4 +1,4 @@
-import './Login.module.css';
+import './Login.css';
 
 interface LoginProps {}
 

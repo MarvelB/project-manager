@@ -1,4 +1,4 @@
-import './Signup.module.css';
+import './Signup.css';
 
 interface SignupProps {}
 

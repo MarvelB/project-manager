@@ -1,4 +1,4 @@
-import './Create.module.css';
+import './Create.css';
 
 interface CreateProps {}
 
