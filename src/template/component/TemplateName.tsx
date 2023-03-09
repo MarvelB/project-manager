@@ -1,5 +1,4 @@
-// @ts-ignore: Cannot find css module
-import styles from './TemplateName.css';
+import './TemplateName.css';
 
 interface TemplateNameProps {}
 
