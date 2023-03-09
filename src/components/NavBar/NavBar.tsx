@@ -1,6 +1,6 @@
 import './NavBar.css';
-// @ts-ignore: Cannot find module
-import Temple from 'assets/temple.svg';
+// // @ts-ignore: Cannot find module
+// import Temple from 'assets/temple.svg';
 import { Link } from 'react-router-dom';
 
 interface NavBarProps {}
@@ -11,7 +11,7 @@ const NavBar = ({ }: NavBarProps) => {
       <ul>
 
         <li className="logo">
-          <img src={Temple} alt="dojo" />
+          {/* <img src={Temple} alt="dojo" /> */}
           <span>Project Manager</span>
         </li>
 
