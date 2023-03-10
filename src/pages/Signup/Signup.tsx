@@ -8,10 +8,41 @@ const Signup = ({ }: SignupProps) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
-  const [image, setImage] = useState<null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [imageError, setImageError] = useState<string>("");
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImage(null);
+
+    let innerImage = e.target.files && e.target.files.length ? e.target.files[0] : null;
+
+    if (!innerImage) {
+      setImageError("Please select a file");
+      return;
+    }
+
+    if (!innerImage.type.includes("image")) {
+      setImageError("Selected file must be an image");
+      return;
+    }
+
+    if (innerImage.size > 100000) {
+      setImageError("Image file size must be less than 100Kb");
+      return;
+    }
+
+    setImageError("");
+    setImage(innerImage);
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log(email, password, displayName, image);
+  }
 
   return (
-    <form className="auth-form">
+    <form className="auth-form" onSubmit={handleSubmit}>
       <h2>Sign up</h2>
 
       <label>
@@ -49,7 +80,10 @@ const Signup = ({ }: SignupProps) => {
         <input
           type="file"
           required
+          onChange={handleFile}
         />
+
+        {imageError && <div className="error">{imageError}</div>}
       </label>
 
       <button className="btn">Sign up</button>
