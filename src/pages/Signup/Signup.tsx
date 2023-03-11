@@ -1,3 +1,4 @@
+import useSignup from 'hooks/useSignup';
 import { useState } from 'react';
 import './Signup.css';
 
@@ -10,6 +11,8 @@ const Signup = ({ }: SignupProps) => {
   const [displayName, setDisplayName] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [imageError, setImageError] = useState<string>("");
+
+  const { signup, error, isLoading } = useSignup();
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImage(null);
@@ -35,10 +38,10 @@ const Signup = ({ }: SignupProps) => {
     setImage(innerImage);
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(email, password, displayName, image);
+    await signup(email, password, displayName, image!);
   }
 
   return (
@@ -86,7 +89,12 @@ const Signup = ({ }: SignupProps) => {
         {imageError && <div className="error">{imageError}</div>}
       </label>
 
-      <button className="btn">Sign up</button>
+      <button
+        className="btn"
+        disabled={isLoading}
+      >{isLoading ? "Loading" : "Sign up"}</button>
+
+      {error && <div className="error">{error}</div>}
 
     </form>
   );

@@ -1,10 +1,10 @@
-import { projectAuth } from "firebase/config";
+import { projectAuth, projectStorage } from "firebase/config";
 import { useEffect, useState } from "react";
 import { AuthActionType } from "types/auth-actions.model";
 import { useAuthContext } from "./useAuthContext";
 
 export interface UseSignUpType {
-    signup:  (email: string, password: string, displayName: string) => Promise<void>;
+    signup:  (email: string, password: string, displayName: string, image: File) => Promise<void>;
     isLoading: boolean;
     error: string;
 }
@@ -15,7 +15,7 @@ const useSignup = (): UseSignUpType => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { dispatch } = useAuthContext();
 
-    const signup = async (email: string, password: string, displayName: string) => {
+    const signup = async (email: string, password: string, displayName: string, image: File) => {
         setError("");
         setIsLoading(true);
 
@@ -26,9 +26,14 @@ const useSignup = (): UseSignUpType => {
                 throw new Error("Could not complete signup");
             }
 
-            // Adding displayName to user
+            // Uploading user profile picture
+            const folderPath = `profilePictures/${res.user?.uid}/${image.name}`;
 
-            await res.user?.updateProfile({displayName});
+            const imageRes = await projectStorage.ref(folderPath).put(image);
+            const photoURL = await imageRes.ref.getDownloadURL();
+
+            // Adding displayName to user
+            await res.user?.updateProfile({displayName, photoURL});
 
             // Dispatching login action
             dispatch({ type: AuthActionType.LOGIN, payload: res.user });
