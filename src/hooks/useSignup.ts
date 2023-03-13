@@ -1,5 +1,6 @@
-import { projectAuth, projectStorage } from "firebase/config";
+import { projectAuth, projectFirestore, projectStorage } from "firebase/config";
 import { useEffect, useState } from "react";
+import { UserModel } from "types";
 import { AuthActionType } from "types/auth-actions.model";
 import { useAuthContext } from "./useAuthContext";
 
@@ -34,6 +35,13 @@ const useSignup = (): UseSignUpType => {
 
             // Adding displayName to user
             await res.user?.updateProfile({displayName, photoURL});
+
+            // Creating a user document
+            await projectFirestore.collection("users").doc(res.user?.uid).set({
+                displayName,
+                photoURL,
+                signedIn: true
+            } as UserModel);
 
             // Dispatching login action
             dispatch({ type: AuthActionType.LOGIN, payload: res.user });
