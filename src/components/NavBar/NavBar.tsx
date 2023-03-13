@@ -3,12 +3,15 @@ import './NavBar.css';
 // import Temple from 'assets/temple.svg';
 import { Link } from 'react-router-dom';
 import { useLogout } from 'hooks/useLogout';
+import { useAuthContext } from 'hooks/useAuthContext';
 
 interface NavBarProps {}
 
 const NavBar = ({ }: NavBarProps) => {
 
   const { isLoading, logout } = useLogout();
+
+  const { user } = useAuthContext();
 
   return (
     <nav className="navbar">
@@ -19,21 +22,27 @@ const NavBar = ({ }: NavBarProps) => {
           <span>Project Manager</span>
         </li>
 
-        <li>
-          <Link to="/login">Login</Link>
-        </li>
+        {!user && (
+          <>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
 
-        <li>
-          <Link to="/signup">Signup</Link>
-        </li>
+            <li>
+              <Link to="/signup">Signup</Link>
+            </li>
+          </>
+        )}
 
-        <li>
-          <button
-            className="btn"
-            onClick={logout}
-            disabled={isLoading}
-          >{isLoading ? "Logging out..." : "Logout"}</button>
-        </li>
+        {user && (
+          <li>
+            <button
+              className="btn"
+              onClick={logout}
+              disabled={isLoading}
+            >{isLoading ? "Logging out..." : "Logout"}</button>
+          </li>
+        )}
 
       </ul>
     </nav>
