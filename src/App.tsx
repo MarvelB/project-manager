@@ -18,7 +18,7 @@ function App() {
       {isAuthReady && (
         <BrowserRouter>
 
-          <Sidebar />
+          {user && <Sidebar />}
 
           <div className="container">
 
