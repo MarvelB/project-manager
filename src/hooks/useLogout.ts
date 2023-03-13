@@ -1,5 +1,6 @@
-import { projectAuth } from "firebase/config";
+import { projectAuth, projectFirestore } from "firebase/config";
 import { useEffect, useState } from "react";
+import { UserModel } from "types";
 import { AuthActionType } from "types/auth-actions.model";
 import { useAuthContext } from "./useAuthContext";
 
@@ -13,7 +14,7 @@ export const useLogout = (): UseLogoutType => {
     const [isCancelled, setIsCancelled] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { dispatch } = useAuthContext();
+    const { dispatch, user } = useAuthContext();
 
     const logout = async () => {
         setError("");
@@ -21,6 +22,8 @@ export const useLogout = (): UseLogoutType => {
 
         // Signing user out
         try {
+            await projectFirestore.collection("users").doc(user?.uid).update({ signedIn: false } as Partial<UserModel>);
+
             await projectAuth.signOut();
 
             dispatch({type: AuthActionType.LOGOUT, payload: null});
