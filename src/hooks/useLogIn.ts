@@ -1,5 +1,6 @@
-import { projectAuth } from "firebase/config";
+import { projectAuth, projectFirestore } from "firebase/config";
 import { useEffect, useState } from "react";
+import { UserModel } from "types";
 import { AuthActionType } from "types/auth-actions.model";
 import { useAuthContext } from "./useAuthContext";
 
@@ -22,6 +23,9 @@ export const useLogIn = (): UseLoginType => {
         // Signing user out
         try {
             const res = await projectAuth.signInWithEmailAndPassword(email, password);
+
+            await projectFirestore.collection("users")
+                .doc(res.user?.uid).update({ signedIn: true } as Partial<UserModel>);
 
             dispatch({type: AuthActionType.LOGIN, payload: res.user});
 
