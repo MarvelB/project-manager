@@ -1,5 +1,6 @@
 import NavBar from 'components/NavBar/NavBar';
 import Sidebar from 'components/Sidebar/Sidebar';
+import UsersSideBar from 'components/UsersSideBar/UsersSideBar';
 import { useAuthContext } from 'hooks/useAuthContext';
 import Create from 'pages/Create/Create';
 import Dashboard from 'pages/Dashboard/Dashboard';
@@ -54,6 +55,8 @@ function App() {
             </Switch>
 
           </div>
+
+          {user && <UsersSideBar />}
 
         </BrowserRouter>
       )}
