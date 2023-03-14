@@ -1,6 +1,16 @@
 import { useState } from 'react';
+import Select from 'react-select';
 import { UserModel } from 'types';
+import { ProjectCategories, ProjectCategorySelect } from 'types/categories.model';
 import './Create.css';
+import s from 'string';
+
+const projectCategorieOptions: ProjectCategorySelect[] = [
+  { value: ProjectCategories.DEVELOPMENT, label: s(ProjectCategories.DEVELOPMENT).capitalize().toString() },
+  { value: ProjectCategories.DESIGN, label: s(ProjectCategories.DESIGN).capitalize().toString() },
+  { value: ProjectCategories.SALES, label: s(ProjectCategories.SALES).capitalize().toString() },
+  { value: ProjectCategories.MARKETING, label: s(ProjectCategories.MARKETING).capitalize().toString() },
+]
 
 interface CreateProps {}
 
@@ -9,13 +19,13 @@ const Create = ({ }: CreateProps) => {
   const [name, setName] = useState<string>("");
   const [details, setDetails] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<ProjectCategories | "">("");
   const [assignedUsers, setAssignedUsers] = useState<UserModel[]>([]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(name, details, dueDate);
+    console.log(name, details, dueDate, category);
   }
 
   return (
@@ -55,6 +65,10 @@ const Create = ({ }: CreateProps) => {
 
         <label>
           <span>Project category</span>
+          <Select
+            options={projectCategorieOptions}
+            onChange={(option) => setCategory(option?.value as ProjectCategories ?? "")}
+          />
         </label>
 
         <label>
