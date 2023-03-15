@@ -8,6 +8,7 @@ const enum UseFirestoreActionType {
     DOCUMENT_ADDED = "DOCUMENT_ADDED",
     ERROR = "ERROR",
     DOCUMENT_DELETED = "DOCUMENT_DELETED",
+    UPDATED_DOCUMENT = "UPDATED_DOCUMENT"
 }
 
 interface UseFirestoreAction {
@@ -38,6 +39,9 @@ const firestoreReducer = (state: UseFirestoreState, action: UseFirestoreAction) 
         case UseFirestoreActionType.DOCUMENT_DELETED:
             newState = {isLoading: false, success: true, error: "", document: null};
             break;
+        case UseFirestoreActionType.UPDATED_DOCUMENT:
+            newState = {isLoading: false, success: true, error: "", document: action.payload};
+            break;
     }
 
     return newState;
@@ -46,6 +50,7 @@ const firestoreReducer = (state: UseFirestoreState, action: UseFirestoreAction) 
 export interface UseFirestoreType<T> {
     addDocument: (document: T) => Promise<void>;
     deleteDocument: (id: string) => Promise<void>;
+    updateDocument: (id: string, updates: Partial<T>) => Promise<void>
     response: UseFirestoreState;
 }
 
@@ -87,9 +92,23 @@ export const useFirestore = <T>(collection: string): UseFirestoreType<T> => {
         }
     }
 
+    const updateDocument = async (id: string, updates: Partial<T>) => {
+        dispatch({type: UseFirestoreActionType.IS_LOADING, payload: null})
+
+        try {
+
+            const updatedDocument = await ref.doc(id).update({...updates});
+
+            dispatchIfNotCancelled({ type: UseFirestoreActionType.UPDATED_DOCUMENT, payload: updatedDocument });
+            
+        } catch (err: any) {
+            dispatchIfNotCancelled({type: UseFirestoreActionType.ERROR, payload: err.message});
+        }
+    }
+
     useEffect(() => {
         return () => setIsCancelled(true);
     }, []);
 
-    return { addDocument, deleteDocument, response }
+    return { addDocument, deleteDocument, updateDocument, response }
 }
