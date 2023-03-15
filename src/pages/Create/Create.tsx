@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { UserModel } from 'types';
+import { UserModelWithId } from 'types';
 import { ProjectCategories, ProjectCategorySelect } from 'types/categories.model';
 import './Create.css';
 import s from 'string';
+import { useCollection } from 'hooks/useCollection';
 
 const projectCategorieOptions: ProjectCategorySelect[] = [
   { value: ProjectCategories.DEVELOPMENT, label: s(ProjectCategories.DEVELOPMENT).capitalize().toString() },
@@ -20,12 +21,26 @@ const Create = ({ }: CreateProps) => {
   const [details, setDetails] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
   const [category, setCategory] = useState<ProjectCategories | "">("");
-  const [assignedUsers, setAssignedUsers] = useState<UserModel[]>([]);
+  const [assignedUsers, setAssignedUsers] = useState<UserModelWithId[]>([]);
+
+  const [userOptions, setUserOptions] = useState<{value: UserModelWithId, label: string}[]>([]);
+
+  const { documents: users } = useCollection<UserModelWithId>("users");
+
+  useEffect(() => {
+    if (users && users.length) {
+      const innerOptions = users.map(user => {
+        return {value: user, label: user.displayName}
+      })
+
+      setUserOptions(innerOptions);
+    }
+  }, [users]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(name, details, dueDate, category);
+    console.log(name, details, dueDate, category, assignedUsers);
   }
 
   return (
@@ -73,6 +88,11 @@ const Create = ({ }: CreateProps) => {
 
         <label>
           <span>Assigned to</span>
+          <Select
+            options={userOptions}
+            onChange={(selectedOptions) => setAssignedUsers(selectedOptions.map(innerOption => innerOption.value))}
+            isMulti
+          />
         </label>
 
         <button className="btn">Add project</button>
