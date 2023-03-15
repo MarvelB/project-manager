@@ -2,6 +2,7 @@ import { useDocument } from 'hooks/useDocument';
 import { useParams } from 'react-router-dom';
 import { ProjectModelWithId } from 'types/project.model';
 import './Project.css';
+import ProjectSummary from './ProjectSummary';
 
 interface ProjectProps {}
 
@@ -21,7 +22,7 @@ const Project = ({ }: ProjectProps) => {
 
   return (
     <div className="project-details">
-      <h1>{project.name}</h1>
+      <ProjectSummary project={project} />
     </div>
   );
 }
