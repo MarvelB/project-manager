@@ -16,8 +16,14 @@ export const useDocument = <T>(collection: string, documentId: string): UseDocum
         const docRef = projectFirestore.collection(collection).doc(documentId);
 
         const unsubscribe = docRef.onSnapshot((snapshot) => {
-            setDocument({...snapshot.data(), id: snapshot.id} as T);
-            setError("");
+
+            if (snapshot.data()) {
+                setDocument({...snapshot.data(), id: snapshot.id} as T);
+                setError("");
+            } else {
+                setError("Document does not exist");
+            }
+
         }, error => {
             console.log(error);
             setError(error.message);
