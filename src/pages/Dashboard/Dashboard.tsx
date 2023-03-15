@@ -2,6 +2,7 @@ import ProjectList from 'components/ProjectList/ProjectList';
 import { useCollection } from 'hooks/useCollection';
 import { ProjectModelWithId } from 'types/project.model';
 import './Dashboard.css';
+import ProjectFilter from './ProjectFilter';
 
 interface DashboardProps {}
 
@@ -14,6 +15,9 @@ const Dashboard = ({ }: DashboardProps) => {
       <h2 className="page-title">Dashboard</h2>
 
       {error && <p className="error">{error}</p>}
+
+      {projects && <ProjectFilter />}
+
       {projects && <ProjectList projects={projects} />}
       
     </div>
