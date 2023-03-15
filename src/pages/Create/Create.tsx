@@ -5,6 +5,11 @@ import { ProjectCategories, ProjectCategorySelect } from 'types/categories.model
 import './Create.css';
 import s from 'string';
 import { useCollection } from 'hooks/useCollection';
+import { ProjectModel, ProjectModelUser } from 'types/project.model';
+import { timeStamp } from 'firebase/config';
+import { useAuthContext } from 'hooks/useAuthContext';
+import { useFirestore } from 'hooks/useFirestore';
+import { useHistory } from 'react-router-dom';
 
 const projectCategorieOptions: ProjectCategorySelect[] = [
   { value: ProjectCategories.DEVELOPMENT, label: s(ProjectCategories.DEVELOPMENT).capitalize().toString() },
@@ -28,6 +33,12 @@ const Create = ({ }: CreateProps) => {
 
   const { documents: users } = useCollection<UserModelWithId>("users");
 
+  const { user } = useAuthContext();
+
+  const { addDocument: addProject, response } = useFirestore("projects");
+
+  const history = useHistory();
+
   useEffect(() => {
     if (users && users.length) {
       const innerOptions = users.map(user => {
@@ -38,7 +49,13 @@ const Create = ({ }: CreateProps) => {
     }
   }, [users]);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (response.document && response.success) {
+      history.push("/");
+    }
+  }, [response]);
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setFormError("");
@@ -53,7 +70,26 @@ const Create = ({ }: CreateProps) => {
       return;
     }
 
-    console.log(name, details, dueDate, category, assignedUsers);
+    const innerAssignedUsers: ProjectModelUser[] = assignedUsers.map((user) => {
+      return {displayName: user.displayName, id: user.id, photoURL: user.photoURL}
+    })
+
+    const project: ProjectModel = {
+      name,
+      details,
+      dueDate: timeStamp.fromDate(new Date(dueDate)),
+      createdAt: timeStamp.fromDate(new Date()),
+      category,
+      assignedUsers: innerAssignedUsers,
+      comments: [],
+      createdBy: {
+        displayName: user?.displayName ?? "",
+        photoURL: user?.photoURL ?? "",
+        id: user?.uid ?? "",
+      }
+    }
+
+    await addProject(project);
   }
 
   return (
@@ -111,6 +147,7 @@ const Create = ({ }: CreateProps) => {
         <button className="btn">Add project</button>
 
         {formError && <p className="error">{formError}</p>}
+        {response.error && <p className="error">{response.error}</p>}
 
       </form>
 
