@@ -22,6 +22,7 @@ const Create = ({ }: CreateProps) => {
   const [dueDate, setDueDate] = useState<string>("");
   const [category, setCategory] = useState<ProjectCategories | "">("");
   const [assignedUsers, setAssignedUsers] = useState<UserModelWithId[]>([]);
+  const [formError, setFormError] = useState<string>("");
 
   const [userOptions, setUserOptions] = useState<{value: UserModelWithId, label: string}[]>([]);
 
@@ -39,6 +40,18 @@ const Create = ({ }: CreateProps) => {
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setFormError("");
+
+    if (category == "") {
+      setFormError("Select a project category");
+      return;
+    }
+
+    if (assignedUsers.length == 0) {
+      setFormError("Assign the project to at least one user");
+      return;
+    }
 
     console.log(name, details, dueDate, category, assignedUsers);
   }
@@ -96,6 +109,8 @@ const Create = ({ }: CreateProps) => {
         </label>
 
         <button className="btn">Add project</button>
+
+        {formError && <p className="error">{formError}</p>}
 
       </form>
 
