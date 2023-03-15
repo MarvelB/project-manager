@@ -25,7 +25,7 @@ const Project = ({ }: ProjectProps) => {
     <div className="project-details">
       <ProjectSummary project={project} />
 
-      <ProjectComments />
+      <ProjectComments project={project} />
     </div>
   );
 }

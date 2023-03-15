@@ -1,16 +1,19 @@
+import Avatar from "components/Avatar/Avatar";
 import { timeStamp } from "firebase/config";
 import { useAuthContext } from "hooks/useAuthContext";
-import { useState } from "react"
-import { ProjectCommentModel } from "types/project.model";
+import { useFirestore } from "hooks/useFirestore";
+import { useEffect, useState } from "react"
+import { ProjectCommentModel, ProjectModel, ProjectModelWithId } from "types/project.model";
 
 interface ProjectCommentsProps {
-
+    project: ProjectModelWithId;
 }
 
-const ProjectComments = ({ }: ProjectCommentsProps) => {
+const ProjectComments = ({ project }: ProjectCommentsProps) => {
 
     const [newComment, setNewComment] = useState<string>("");
     const { user } = useAuthContext();
+    const { updateDocument, response } = useFirestore<ProjectModel>("projects");
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -24,12 +27,33 @@ const ProjectComments = ({ }: ProjectCommentsProps) => {
             id: Math.random(),
         }
 
-        console.log(innerComment);
+        await updateDocument(project.id, { comments: [...project.comments, innerComment] });
     }
+
+    useEffect(() => {
+        if (response.success) {
+            setNewComment("");
+        }
+    }, [response]);
 
     return(
         <div className="project-comments">
             <h4>Project Comments</h4>
+
+            <ul>
+                {project.comments.length && project.comments.map(comment => (
+                    <li key={comment.id}>
+                        <div className="comment-author">
+                            <Avatar imageSrc={comment.userPhotoURL} />
+                            <p>{comment.userDisplayName}</p>
+                        </div>
+                        <div className="comment-date">
+                            <p>Date over here</p>
+                        </div>
+                        <div className="comment-content">{comment.body}</div>
+                    </li>
+                ))}
+            </ul>
 
             <form className="add-comment" onSubmit={handleFormSubmit}>
 
@@ -42,7 +66,10 @@ const ProjectComments = ({ }: ProjectCommentsProps) => {
                     ></textarea>
                 </label>
 
-                <button className="btn">Add comment</button>
+                <button
+                    className="btn"
+                    disabled={response.isLoading}
+                >{ response.isLoading ? "Adding" : "Add comment" }</button>
 
             </form>
 
