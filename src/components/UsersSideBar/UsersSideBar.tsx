@@ -1,13 +1,13 @@
 import Avatar from 'components/Avatar/Avatar';
 import { useCollection } from 'hooks/useCollection';
-import { UserModel, WithID } from 'types';
+import { UserModelWithId } from 'types';
 import './UsersSideBar.css';
 
 interface UsersSideBarProps {}
 
 const UsersSideBar = ({ }: UsersSideBarProps) => {
 
-  const { documents: users, error } = useCollection<WithID<UserModel>>("users");
+  const { documents: users, error } = useCollection<UserModelWithId>("users");
 
   return (
     <div className="user-list">
