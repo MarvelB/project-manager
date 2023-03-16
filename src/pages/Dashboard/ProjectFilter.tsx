@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { ProjectCategories } from "types/categories.model"
 
 const filterCategories = [
@@ -11,16 +10,15 @@ const filterCategories = [
 ]
 
 interface ProjectFilterProps {
-
+    currentFilter: string;
+    changeFilter: (newFilter: string) => void;
 }
 
-const ProjectFilter = ({ }: ProjectFilterProps) => {
-
-    const [currentFilter, setCurrentFilter] = useState<string>(filterCategories[0]);
+const ProjectFilter = ({ currentFilter, changeFilter }: ProjectFilterProps) => {
 
     const handleFilterClick = (filter: string) => {
         console.log(filter);
-        setCurrentFilter(filter);
+        changeFilter(filter);
     }
 
     return (
