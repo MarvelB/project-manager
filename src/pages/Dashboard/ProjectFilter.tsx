@@ -17,7 +17,6 @@ interface ProjectFilterProps {
 const ProjectFilter = ({ currentFilter, changeFilter }: ProjectFilterProps) => {
 
     const handleFilterClick = (filter: string) => {
-        console.log(filter);
         changeFilter(filter);
     }
 
