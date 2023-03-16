@@ -9,16 +9,16 @@ export interface UseCollectionType<T> {
 
 export const useCollection = <T>(
     collection: string, 
-    _query?: [string | firebase.firestore.FieldPath, firebase.firestore.WhereFilterOp, any],
-    _orderBy?: [fieldPath: string | firebase.firestore.FieldPath, directionStr?: firebase.firestore.OrderByDirection]
+    query?: [string | firebase.firestore.FieldPath, firebase.firestore.WhereFilterOp, any],
+    orderBy?: [fieldPath: string | firebase.firestore.FieldPath, directionStr?: firebase.firestore.OrderByDirection]
 ): UseCollectionType<T> => {
 
     const [documents, setDocuments] = useState<T[]>([]);
     const [error, setError] = useState<string>("");
 
     // Next line is necessary otherwise this hook will enter an infinte loop
-    const query = useRef(_query).current;
-    const orderBy = useRef(_orderBy).current;
+    // const query = useRef(_query).current;
+    // const orderBy = useRef(_orderBy).current;
 
     useEffect(() => {
         let ref: firebase.firestore.Query<firebase.firestore.DocumentData> = projectFirestore.collection(collection);
